@@ -1,0 +1,8 @@
+<Project>
+  <!-- Duong dan AutoCAD: sua trong Directory.Build.local.props (khong commit), vi du:
+       <Project><PropertyGroup><AcadDir>C:\Program Files\Autodesk\AutoCAD 2022</AcadDir></PropertyGroup></Project> -->
+  <Import Project="$(MSBuildThisFileDirectory)Directory.Build.local.props" Condition="Exists('$(MSBuildThisFileDirectory)Directory.Build.local.props')" />
+  <PropertyGroup Condition="'$(AcadDir)' == ''">
+    <AcadDir>C:\Program Files\Autodesk\AutoCAD 2022</AcadDir>
+  </PropertyGroup>
+</Project>
