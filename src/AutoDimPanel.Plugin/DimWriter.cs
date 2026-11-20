@@ -19,20 +19,26 @@ namespace AutoDimPanel.Plugin
             {
                 EnsureLayer(tr, lt, s.Layer);
                 ObjectId styleId = dst.Has(s.Style) ? dst[s.Style] : db.Dimstyle;
-                Point3d p1 = new Point3d(s.P1.X, s.P1.Y, 0);
-                Point3d p2 = new Point3d(s.P2.X, s.P2.Y, 0);
-                Point3d lp = new Point3d(s.LinePoint.X, s.LinePoint.Y, 0);
                 Dimension dim;
                 if (s.Kind == DimKind.Aligned)
-                    dim = new AlignedDimension(p1, p2, lp, "", styleId);
+                    dim = new AlignedDimension(Pt3(s.P1), Pt3(s.P2), Pt3(s.LinePoint), "", styleId);
+                else if (s.Kind == DimKind.Angular)
+                    dim = new LineAngularDimension2(Pt3(s.A1), Pt3(s.A2), Pt3(s.B1), Pt3(s.B2), Pt3(s.ArcPoint), "", styleId);
+                else if (s.Kind == DimKind.Radial)
+                    dim = new RadialDimension(Pt3(s.Center), Pt3(s.ChordPoint), 0.0, "", styleId);
                 else
-                    dim = new RotatedDimension(s.RotationDeg * Math.PI / 180.0, p1, p2, lp, "", styleId);
+                    dim = new RotatedDimension(s.RotationDeg * Math.PI / 180.0, Pt3(s.P1), Pt3(s.P2), Pt3(s.LinePoint), "", styleId);
                 dim.Layer = s.Layer;
                 ms.AppendEntity(dim);
                 tr.AddNewlyCreatedDBObject(dim, true);
                 n++;
             }
             return n;
+        }
+
+        private static Point3d Pt3(Pt p)
+        {
+            return new Point3d(p.X, p.Y, 0);
         }
 
         private static void EnsureLayer(Transaction tr, LayerTable lt, string name)
